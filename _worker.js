@@ -3,7 +3,6 @@ let subConverter = 'sUBaPI.cMlIUSSSS.nET';
 let subConfig = 'https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_Online_Mini_MultiMode.ini';
 let subProtocol = 'https';
 let SUBUpdateTime = 6; // 单位小时
-let proxyIP = 'proxyip.fxxk.dedyn.io:443';
 let ips = ['3Q.bestip-one.cf.090227.xyz#感谢白嫖哥t.me/bestip_one'];
 let FileName = 'BPSUB';
 let EndPS = '';
@@ -19,7 +18,7 @@ export default {
             subConverter = subConverter.split("//")[1] || subConverter;
         }
         subConfig = env.SUBCONFIG || subConfig;
-        proxyIP = env.PROXYIP || proxyIP;
+        const proxyIP = env.PROXYIP || null;
         if (env.ADD) ips = await 整理成数组(env.ADD);
         FileName = env.SUBNAME || FileName;
         EndPS = env.PS || EndPS;
@@ -60,21 +59,23 @@ export default {
                 subConverter = subConverter.split("//")[1] || subConverter;
             }
             subConfig = url.searchParams.get('subconfig') || subConfig;
-            const uuid =  url.searchParams.get('uuid') || env.UUID;
+            const uuid = url.searchParams.get('uuid') || env.UUID;
             const uuid_json = await getLocalData(bphost, uuid);
-            proxyIP = url.searchParams.get('proxyip') || proxyIP;
-
-            let 最终路径 = `/snippets/ip=${proxyIP}`;
+            const xhttp = url.searchParams.get('xhttp') || false;
+            let 最终路径 = url.searchParams.has('proxyip') ? `/snippets/ip=${url.searchParams.get('proxyip')}` : (proxyIP && proxyIP.trim() !== '') ? `/snippets/ip=${encodeURIComponent(proxyIP)}` : `/snippets`;
             let socks5 = null;
             const 全局socks5 = (url.searchParams.has('global')) ? true : false;
             if (url.searchParams.has('socks5') && url.searchParams.get('socks5') != '') {
                 socks5 = url.searchParams.get('socks5');
                 最终路径 = 全局socks5 ? `/snippets/gs5=${socks5}` : `/snippets/s5=${socks5}`;
-            } else if (url.searchParams.has('http') && url.searchParams.get('http') == '') {
+            } else if (url.searchParams.has('http') && url.searchParams.get('http') != '') {
                 socks5 = url.searchParams.get('http');
                 最终路径 = 全局socks5 ? `/http://${socks5}` : `/http=${socks5}`;
             }
-            
+
+            if (url.searchParams.has('ed') && url.searchParams.get('ed') != '') 最终路径 += `?ed=${url.searchParams.get('ed')}`;
+            const 跳过证书验证 = (url.searchParams.has('scv')) ? true : false;
+
             const responseHeaders = {
                 "content-type": "text/plain; charset=utf-8",
                 "Profile-Update-Interval": `${SUBUpdateTime}`,
@@ -97,11 +98,11 @@ export default {
                     responseHeaders["Content-Disposition"] = `attachment; filename*=utf-8''${encodeURIComponent(FileName)}`;
                     //console.log(subConverterUrl);
                     if (userAgent.includes('sing-box') || userAgent.includes('singbox')) {
-                        subConverterUrl = `${subProtocol}://${subConverter}/sub?target=singbox&url=${encodeURIComponent(subConverterUrl)}&insert=false&config=${encodeURIComponent(subConfig)}&emoji=true&list=false&tfo=false&scv=true&fdn=false&sort=false&new_name=true`;
+                        subConverterUrl = `${subProtocol}://${subConverter}/sub?target=singbox&url=${encodeURIComponent(subConverterUrl)}&insert=false&config=${encodeURIComponent(subConfig)}&emoji=true&list=false&tfo=false&scv=${跳过证书验证}&fdn=false&sort=false&new_name=true`;
                     } else if (userAgent.includes('clash') || userAgent.includes('meta') || userAgent.includes('mihomo')) {
-                        subConverterUrl = `${subProtocol}://${subConverter}/sub?target=clash&url=${encodeURIComponent(subConverterUrl)}&insert=false&config=${encodeURIComponent(subConfig)}&emoji=true&list=false&tfo=false&scv=true&fdn=false&sort=false&new_name=true`;
+                        subConverterUrl = `${subProtocol}://${subConverter}/sub?target=clash&url=${encodeURIComponent(subConverterUrl)}&insert=false&config=${encodeURIComponent(subConfig)}&emoji=true&list=false&tfo=false&scv=${跳过证书验证}&fdn=false&sort=false&new_name=true`;
                     } else {
-                        subConverterUrl = `${subProtocol}://${subConverter}/sub?target=auto&url=${encodeURIComponent(subConverterUrl)}&insert=false&config=${encodeURIComponent(subConfig)}&emoji=true&list=false&tfo=false&scv=true&fdn=false&sort=false&new_name=true`;
+                        subConverterUrl = `${subProtocol}://${subConverter}/sub?target=auto&url=${encodeURIComponent(subConverterUrl)}&insert=false&config=${encodeURIComponent(subConfig)}&emoji=true&list=false&tfo=false&scv=${跳过证书验证}&fdn=false&sort=false&new_name=true`;
                     }
                 }
 
@@ -169,11 +170,11 @@ export default {
 
                     let subConverterUrl = url.href;
                     if (userAgent.includes('sing-box') || userAgent.includes('singbox')) {
-                        subConverterUrl = `${subProtocol}://${subConverter}/sub?target=singbox&url=${encodeURIComponent(subConverterUrl)}&insert=false&config=${encodeURIComponent(subConfig)}&emoji=true&list=false&tfo=false&scv=true&fdn=false&sort=false&new_name=true`;
+                        subConverterUrl = `${subProtocol}://${subConverter}/sub?target=singbox&url=${encodeURIComponent(subConverterUrl)}&insert=false&config=${encodeURIComponent(subConfig)}&emoji=true&list=false&tfo=false&scv=${跳过证书验证}&fdn=false&sort=false&new_name=true`;
                     } else if (userAgent.includes('clash') || userAgent.includes('meta') || userAgent.includes('mihomo')) {
-                        subConverterUrl = `${subProtocol}://${subConverter}/sub?target=clash&url=${encodeURIComponent(subConverterUrl)}&insert=false&config=${encodeURIComponent(subConfig)}&emoji=true&list=false&tfo=false&scv=true&fdn=false&sort=false&new_name=true`;
+                        subConverterUrl = `${subProtocol}://${subConverter}/sub?target=clash&url=${encodeURIComponent(subConverterUrl)}&insert=false&config=${encodeURIComponent(subConfig)}&emoji=true&list=false&tfo=false&scv=${跳过证书验证}&fdn=false&sort=false&new_name=true`;
                     } else {
-                        subConverterUrl = `${subProtocol}://${subConverter}/sub?target=auto&url=${encodeURIComponent(subConverterUrl)}&insert=false&config=${encodeURIComponent(subConfig)}&emoji=true&list=false&tfo=false&scv=true&fdn=false&sort=false&new_name=true`;
+                        subConverterUrl = `${subProtocol}://${subConverter}/sub?target=auto&url=${encodeURIComponent(subConverterUrl)}&insert=false&config=${encodeURIComponent(subConfig)}&emoji=true&list=false&tfo=false&scv=${跳过证书验证}&fdn=false&sort=false&new_name=true`;
                     }
 
                     try {
@@ -298,8 +299,12 @@ export default {
                         const uuid = selected.uuid;
                         const 伪装域名 = selected.host;
 
-                        const 为烈士Link = 'vl' + 'es' + `s://${uuid}@${address}:${port}?security=tls&sni=${伪装域名}&type=ws&host=${伪装域名}&path=${encodeURIComponent(最终路径)}&allowInsecure=1&fragment=${encodeURIComponent('1,40-60,30-50,tlshello')}&encryption=none#${encodeURIComponent(addressid + 节点备注)}`;
-                        return 为烈士Link;
+                        const 为烈士Link = 'vl' + 'es' + `s://${uuid}@${address}:${port}?security=tls&sni=${伪装域名}&type=ws&host=${伪装域名}&path=${encodeURIComponent(最终路径) + (跳过证书验证 ? '&allowInsecure=1' : '')}&fragment=${encodeURIComponent('1,40-60,30-50,tlshello')}&encryption=none#${encodeURIComponent(addressid + 节点备注)}`;
+                        
+                        if (xhttp) {
+                            const xhttpLink = 'vl' + 'es' + `s://${uuid}@${address}:${port}?security=tls&sni=${伪装域名}&type=xhttp&host=${伪装域名}&path=${encodeURIComponent(最终路径) + (跳过证书验证 ? '&allowInsecure=1' : '')}&mode=stream-one&fragment=${encodeURIComponent('1,40-60,30-50,tlshello')}&encryption=none#${encodeURIComponent(addressid + 节点备注 + '-XHTTP')}`;
+                            return 为烈士Link + '\n' + xhttpLink;
+                        } else return 为烈士Link;
                     }
                 }).join('\n');
 
@@ -345,27 +350,6 @@ export default {
                 });
             } catch (error) {
                 return new Response('下载失败: ' + error.message, {
-                    status: 500,
-                    headers: { 'Content-Type': 'text/plain; charset=utf-8' }
-                });
-            }
-        } else if (url.pathname === '/proxy_host.js') {
-            // 代理主机Worker代码获取
-            try {
-                const jsResponse = await fetch('https://raw.githubusercontent.com/cmliu/CF-Workers-BPSUB/main/proxy_host/_worker.js');
-                if (!jsResponse.ok) {
-                    throw new Error('获取代码失败');
-                }
-
-                const jsCode = await jsResponse.text();
-                return new Response(jsCode, {
-                    headers: {
-                        'Content-Type': 'text/plain; charset=utf-8',
-                        'Cache-Control': 'public, max-age=300' // 5分钟缓存，保证及时更新
-                    }
-                });
-            } catch (error) {
-                return new Response('获取代码失败: ' + error.message, {
                     status: 500,
                     headers: { 'Content-Type': 'text/plain; charset=utf-8' }
                 });
@@ -781,7 +765,7 @@ async function subHtml(request, hostLength = hosts.length) {
             align-items: center;
         }
         
-        textarea, input[type="text"] {
+        textarea, input[type="text"], select {
             width: 100%;
             padding: 15px 18px;
             border: 2px solid rgba(0, 255, 255, 0.2);
@@ -795,7 +779,7 @@ async function subHtml(request, hostLength = hosts.length) {
             z-index: 10;
         }
         
-        textarea:focus, input[type="text"]:focus {
+        textarea:focus, input[type="text"]:focus, select:focus {
             outline: none;
             border-color: #00ffff;
             box-shadow: 0 0 0 4px rgba(0, 255, 255, 0.2), 0 0 20px rgba(0, 255, 255, 0.1);
@@ -804,6 +788,35 @@ async function subHtml(request, hostLength = hosts.length) {
         
         textarea::placeholder, input[type="text"]::placeholder {
             color: #718096;
+        }
+        
+        select {
+            cursor: pointer;
+            font-weight: 500;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="8" viewBox="0 0 12 8"><path fill="%2300ffff" d="M6 8L0 2h12L6 8z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            padding-right: 45px;
+        }
+        
+        select:hover {
+            border-color: rgba(0, 255, 255, 0.4);
+            background-color: rgba(0, 255, 255, 0.05);
+        }
+        
+        select option {
+            background: rgba(26, 32, 44, 0.95);
+            color: #e2e8f0;
+            padding: 12px 15px;
+            border: none;
+            font-weight: 500;
+        }
+        
+        select option:hover, select option:checked {
+            background: rgba(0, 255, 255, 0.1);
         }
         
         textarea {
@@ -1240,6 +1253,16 @@ async function subHtml(request, hostLength = hosts.length) {
             background: rgba(0, 255, 255, 0.1);
         }
         
+        .radio-option.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        
+        .radio-option.disabled .radio-label {
+            color: #666;
+        }
+        
         .radio-option input[type="radio"] {
             margin-right: 10px;
             width: 18px;
@@ -1315,6 +1338,31 @@ async function subHtml(request, hostLength = hosts.length) {
             transition: all 0.3s ease;
         }
         
+        /* 高级参数容器样式 */
+        .advanced-params-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .advanced-params-container .checkbox-option {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        /* 响应式：移动端分行显示 */
+        @media (max-width: 768px) {
+            .advanced-params-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .advanced-params-container .checkbox-option {
+                flex: none;
+                min-width: auto;
+            }
+        }
+        
         /* Socks5 标题行样式 */
         .socks5-header {
             display: flex;
@@ -1329,21 +1377,6 @@ async function subHtml(request, hostLength = hosts.length) {
             min-height: 24px;
             max-height: 24px;
             overflow: hidden;
-        }
-        
-        .socks5-header label[for="socks5"] {
-            margin-bottom: 0;
-            flex-shrink: 0;
-            user-select: text;
-            position: relative;
-            z-index: 10;
-            font-size: 1em;
-            display: flex;
-            align-items: center;
-            height: 24px;
-            min-height: 24px;
-            align-self: center;
-            line-height: 1;
         }
         
         /* 行内复选框样式 */
@@ -1533,11 +1566,6 @@ async function subHtml(request, hostLength = hosts.length) {
                 max-height: none;
             }
             
-            .socks5-header label[for="socks5"] {
-                align-self: center;
-                margin-bottom: 5px;
-            }
-            
             .checkbox-option-inline {
                 align-self: center;
                 margin-top: 5px;
@@ -1689,6 +1717,17 @@ async function subHtml(request, hostLength = hosts.length) {
                                     1️⃣ 进入 规则(Rules) > Snippets → 2️⃣ 创建片段 → 3️⃣ 粘贴下方代码并部署 <br>→ 4️⃣ 片段规则 主机名 > 等于 > 自定义域名 <br>→ 5️⃣ 创建新代理DNS记录 > CNAME > 自定义域 > <strong><span onclick="copyToClipboard('cf.090227.xyz')" style="cursor: pointer; color: #00ff9d; text-decoration: underline;">cf.090227.xyz</span></strong>
                                 </p>
                                 
+                                <!-- 源码选择器 -->
+                                <div style="margin-bottom: 20px;">
+                                    <label for="snippetSourceSelect" style="display: block; margin-bottom: 12px; color: #e2e8f0; font-weight: 600;">选择源码版本：</label>
+                                    <select id="snippetSourceSelect" onchange="changeSnippetSource()">
+                                        <option value="v" selected>🎯 白嫖哥源码</option>
+                                        <option value="t12">📘 天书12源码</option>
+                                        <option value="t13">📗 天书13源码(不支持ios客户端、ed配置)</option>
+                                        <option value="my">🔥 ymyuuu源码(支持xhttp)</option>
+                                    </select>
+                                </div>
+
                                 <!-- UUID 输入框和按钮 -->
                                 <div style="margin-bottom: 20px;">
                                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
@@ -1824,12 +1863,20 @@ async function subHtml(request, hostLength = hosts.length) {
                                 <input type="radio" name="proxyMode" value="socks5" onchange="toggleProxyMode()">
                                 <span class="radio-label">🔒 Socks5 代理</span>
                             </label>
+                            <label class="radio-option">
+                                <input type="radio" name="proxyMode" value="http" onchange="toggleProxyMode()">
+                                <span class="radio-label">📡 HTTP 代理</span>
+                            </label>
                         </div>
                     </div>
                     
                     <!-- ProxyIP 输入框 -->
                     <div class="form-group" id="proxyip-group">
-                        <label for="proxyip">ProxyIP地址：</label>
+                        <!-- 标题行：ProxyIP地址 -->
+                        <div class="socks5-header">
+                            <label for="proxyip">ProxyIP地址：</label>
+                            <span></span>
+                        </div>
                         <input type="text" id="proxyip" placeholder="proxyip.fxxk.dedyn.io:443" value="">
                     </div>
                     
@@ -1844,6 +1891,19 @@ async function subHtml(request, hostLength = hosts.length) {
                             </label>
                         </div>
                         <input type="text" id="socks5" placeholder="user:password@127.0.0.1:1080 或 127.0.0.1:1080" value="">
+                    </div>
+                    
+                    <!-- HTTP 输入框 -->
+                    <div class="form-group" id="http-group" style="display: none;">
+                        <!-- 标题行：HTTP代理 + 全局代理选项 -->
+                        <div class="socks5-header">
+                            <label for="http">HTTP代理：</label>
+                            <label class="checkbox-option-inline" for="globalHttp">
+                                <input type="checkbox" id="globalHttp">
+                                <span class="checkbox-label-inline">🌍 启用全局代理</span>
+                            </label>
+                        </div>
+                        <input type="text" id="http" placeholder="user:password@127.0.0.1:8080 或 127.0.0.1:8080" value="">
                     </div>
                     
                     <!-- ProxyIP 详细说明 -->
@@ -1897,7 +1957,7 @@ async function subHtml(request, hostLength = hosts.length) {
                 <div class="section-content">
                     <div class="form-group">
                         <label for="subapi">订阅转换后端：</label>
-                        <input type="text" id="subapi" placeholder="${subProtocol}://${subConverter}" value="">
+                        <input type="text" id="subapi" placeholder="${subProtocol}://${subConverter.toLowerCase()}" value="">
                         <div class="example">🔄 用于将生成的VLESS链接转换为Clash/SingBox等格式的后端服务
                         </div>
                     </div>
@@ -1905,6 +1965,31 @@ async function subHtml(request, hostLength = hosts.length) {
                         <label for="subconfig">订阅转换配置文件：</label>
                         <input type="text" id="subconfig" placeholder="${subConfig}" value="">
                         <div class="example">📋 订阅转换时使用的配置文件URL，定义规则和策略
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 高级参数设置 -->
+            <div class="section collapsible collapsed">
+                <div class="section-title" onclick="toggleSection(this)">🔧 节点高级设置</div>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label style="margin-bottom: 15px;">高级参数选项：</label>
+                        <div class="advanced-params-container">
+                            <label class="checkbox-option" for="enableEd">
+                                <input type="checkbox" id="enableEd">
+                                <span class="checkbox-label">🎯 启用 ed=2560</span>
+                            </label>
+                            <label class="checkbox-option" for="skipCertVerify">
+                                <input type="checkbox" id="skipCertVerify">
+                                <span class="checkbox-label">🔓 跳过证书验证</span>
+                            </label>
+                        </div>
+                        <div class="example">⚙️ 高级参数说明：
+• ed=2560：启用0-RTT
+• scv：跳过TLS证书验证，适用于自签名证书场景
+• 注意：天书13源码不支持ed参数配置
                         </div>
                     </div>
                 </div>
@@ -1955,12 +2040,17 @@ async function subHtml(request, hostLength = hosts.length) {
                 proxyHost: document.getElementById('proxyHost').value,
                 proxyip: document.getElementById('proxyip').value,
                 socks5: document.getElementById('socks5').value,
+                http: document.getElementById('http').value,
                 subapi: document.getElementById('subapi').value,
                 subconfig: document.getElementById('subconfig').value,
                 snippetUuid: document.getElementById('snippetUuid') ? document.getElementById('snippetUuid').value : '',
                 proxyMode: document.querySelector('input[name="proxyMode"]:checked')?.value || 'proxyip',
                 ipMode: document.querySelector('input[name="ipMode"]:checked')?.value || 'custom',
+                snippetSource: document.getElementById('snippetSourceSelect')?.value || 'v',
                 globalSocks5: document.getElementById('globalSocks5').checked,
+                globalHttp: document.getElementById('globalHttp').checked,
+                enableEd: document.getElementById('enableEd') ? document.getElementById('enableEd').checked : false,
+                skipCertVerify: document.getElementById('skipCertVerify') ? document.getElementById('skipCertVerify').checked : false,
                 activeTab: currentTab, // 保存当前选中的选项卡
                 timestamp: Date.now()
             };
@@ -1991,6 +2081,7 @@ async function subHtml(request, hostLength = hosts.length) {
                 if (formData.proxyHost) document.getElementById('proxyHost').value = formData.proxyHost;
                 if (formData.proxyip) document.getElementById('proxyip').value = formData.proxyip;
                 if (formData.socks5) document.getElementById('socks5').value = formData.socks5;
+                if (formData.http) document.getElementById('http').value = formData.http;
                 if (formData.subapi) document.getElementById('subapi').value = formData.subapi;
                 if (formData.subconfig) document.getElementById('subconfig').value = formData.subconfig;
                 if (formData.snippetUuid && document.getElementById('snippetUuid')) {
@@ -2018,6 +2109,15 @@ async function subHtml(request, hostLength = hosts.length) {
                     }
                 }
                 
+                // 设置源码选择
+                if (formData.snippetSource) {
+                    const snippetSourceSelect = document.getElementById('snippetSourceSelect');
+                    if (snippetSourceSelect) {
+                        snippetSourceSelect.value = formData.snippetSource;
+                        changeSnippetSource();
+                    }
+                }
+                
                 // 恢复选项卡状态
                 if (formData.activeTab) {
                     console.log('恢复选项卡状态:', formData.activeTab);
@@ -2031,6 +2131,26 @@ async function subHtml(request, hostLength = hosts.length) {
                     document.getElementById('globalSocks5').dispatchEvent(new Event('change'));
                 }
                 
+                // 设置全局HTTP选项
+                if (formData.globalHttp !== undefined) {
+                    document.getElementById('globalHttp').checked = formData.globalHttp;
+                    // 手动触发change事件更新样式
+                    document.getElementById('globalHttp').dispatchEvent(new Event('change'));
+                }
+                
+                // 设置高级参数选项
+                if (formData.enableEd !== undefined && document.getElementById('enableEd')) {
+                    document.getElementById('enableEd').checked = formData.enableEd;
+                    // 手动触发change事件更新样式
+                    document.getElementById('enableEd').dispatchEvent(new Event('change'));
+                }
+                
+                if (formData.skipCertVerify !== undefined && document.getElementById('skipCertVerify')) {
+                    document.getElementById('skipCertVerify').checked = formData.skipCertVerify;
+                    // 手动触发change事件更新样式
+                    document.getElementById('skipCertVerify').dispatchEvent(new Event('change'));
+                }
+                
                 console.log('表单数据加载完成');
             } catch (error) {
                 console.error('加载表单数据失败:', error);
@@ -2041,7 +2161,7 @@ async function subHtml(request, hostLength = hosts.length) {
         
         // 设置表单字段的自动保存事件监听器
         function setupAutoSave() {
-            const fields = ['ips', 'subGenerator', 'proxyHost', 'proxyip', 'socks5', 'subapi', 'subconfig', 'snippetUuid'];
+            const fields = ['ips', 'subGenerator', 'proxyHost', 'proxyip', 'socks5', 'http', 'subapi', 'subconfig', 'snippetUuid'];
             
             // 为文本输入字段添加事件监听
             fields.forEach(fieldId => {
@@ -2107,10 +2227,32 @@ async function subHtml(request, hostLength = hosts.length) {
                 radio.addEventListener('change', saveFormData);
             });
             
+            // 为源码选择下拉框添加事件监听
+            const snippetSourceSelect = document.getElementById('snippetSourceSelect');
+            if (snippetSourceSelect) {
+                snippetSourceSelect.addEventListener('change', saveFormData);
+            }
+            
             // 为复选框添加事件监听
             const globalSocks5Checkbox = document.getElementById('globalSocks5');
             if (globalSocks5Checkbox) {
                 globalSocks5Checkbox.addEventListener('change', saveFormData);
+            }
+            
+            const globalHttpCheckbox = document.getElementById('globalHttp');
+            if (globalHttpCheckbox) {
+                globalHttpCheckbox.addEventListener('change', saveFormData);
+            }
+            
+            // 为高级参数复选框添加事件监听
+            const enableEdCheckbox = document.getElementById('enableEd');
+            if (enableEdCheckbox) {
+                enableEdCheckbox.addEventListener('change', saveFormData);
+            }
+            
+            const skipCertVerifyCheckbox = document.getElementById('skipCertVerify');
+            if (skipCertVerifyCheckbox) {
+                skipCertVerifyCheckbox.addEventListener('change', saveFormData);
             }
         }
         
@@ -2120,6 +2262,7 @@ async function subHtml(request, hostLength = hosts.length) {
             const proxyHost = document.getElementById('proxyHost').value.trim();
             const proxyip = document.getElementById('proxyip').value.trim();
             const socks5 = document.getElementById('socks5').value.trim();
+            const http = document.getElementById('http').value.trim();
             const subapi = document.getElementById('subapi').value.trim();
             const subconfig = document.getElementById('subconfig').value.trim();
             const hostLength = ${hostLength};
@@ -2196,6 +2339,28 @@ async function subHtml(request, hostLength = hosts.length) {
                 if (globalSocks5) {
                     params.append('global', 'true');
                 }
+            } else if (proxyMode === 'http') {
+                // 处理HTTP代理模式
+                const http = document.getElementById('http').value.trim();
+                if (!http) {
+                    alert('⚠️ 选择HTTP代理模式时，HTTP代理地址不能为空！\\n\\n请输入HTTP代理地址或切换到ProxyIP模式。');
+                    return;
+                }
+                
+                // 智能处理并验证HTTP格式（复用socks5的处理函数）
+                const processedHttp = processSocks5(http);
+                if (!processedHttp) {
+                    alert('⚠️ HTTP代理格式不正确！\\n\\n请检查输入格式，例如：\\n• user:password@127.0.0.1:8080\\n• 127.0.0.1:8080');
+                    return;
+                }
+                
+                params.append('http', processedHttp);
+                
+                // 检查是否启用全局HTTP代理
+                const globalHttp = document.getElementById('globalHttp').checked;
+                if (globalHttp) {
+                    params.append('global', 'true');
+                }
             } else {
                 // 处理ProxyIP模式
                 if (proxyip) {
@@ -2223,6 +2388,35 @@ async function subHtml(request, hostLength = hosts.length) {
                 }
             }
             
+            // 处理高级参数
+            const enableEd = document.getElementById('enableEd').checked;
+            const skipCertVerify = document.getElementById('skipCertVerify').checked;
+            
+            // 添加 ed=2560 参数（如果启用且不是天书13源码）
+            if (enableEd) {
+                // 检查是否为天书13源码
+                const selectedSource = getSelectedSnippetSource();
+                const isSnippetsTab = activeTab && activeTab.id === 'snippets-tab';
+                
+                if (!isSnippetsTab || selectedSource !== 't13') {
+                    params.append('ed', '2560');
+                }
+            }
+            
+            // 添加 scv 参数（跳过证书验证）
+            if (skipCertVerify) {
+                params.append('scv', 'true');
+            }
+            
+            // 检查是否选择了 ymyuuu 源码，如果是则添加 xhttp=true 参数
+            const isSnippetsTab = activeTab && activeTab.id === 'snippets-tab';
+            if (isSnippetsTab) {
+                const selectedSource = getSelectedSnippetSource();
+                if (selectedSource === 'my') {
+                    params.append('xhttp', 'true');
+                }
+            }
+            
             // 组合最终URL
             const queryString = params.toString();
             if (queryString) {
@@ -2235,6 +2429,8 @@ async function subHtml(request, hostLength = hosts.length) {
             const qrContainer = document.getElementById('qr-container');
             const shortUrlBtn = document.getElementById('generateShortUrl');
             
+            // 存储原始URL到全局变量
+            cpurl = url;
             resultUrl.textContent = url;
             resultSection.style.display = 'block';
             
@@ -2262,7 +2458,8 @@ async function subHtml(request, hostLength = hosts.length) {
                 shortUrlBtn.style.transform = '';
             }, 200);
             
-            const subscriptionLink = document.getElementById('subscriptionLink').textContent;
+            // 使用存储的cpurl而不是页面文本
+            const subscriptionLink = cpurl;
             const subscriptionLinkElement = document.getElementById('subscriptionLink');
             
             // 显示加载状态
@@ -2283,6 +2480,8 @@ async function subHtml(request, hostLength = hosts.length) {
             .then(data => {
                 console.log("短链接响应:", data);
                 if (data.Code === 1 && data.ShortUrl) {
+                    // 更新cpurl为短链接
+                    cpurl = data.ShortUrl;
                     subscriptionLinkElement.textContent = data.ShortUrl;
                     // 使用原有样式更新二维码
                     generateQRCode(data.ShortUrl);
@@ -2307,7 +2506,12 @@ async function subHtml(request, hostLength = hosts.length) {
             if (document.getElementById(elementIdOrText)) {
                 // 如果是元素ID
                 element = document.getElementById(elementIdOrText);
-                url = element.textContent;
+                // 如果是订阅链接，使用存储的cpurl而不是页面文本
+                if (elementIdOrText === 'subscriptionLink' && cpurl) {
+                    url = cpurl;
+                } else {
+                    url = element.textContent;
+                }
             } else {
                 // 如果是直接的文本
                 url = elementIdOrText;
@@ -2368,7 +2572,12 @@ async function subHtml(request, hostLength = hosts.length) {
             
             setTimeout(() => {
                 element.className = originalClass;
-                element.textContent = originalText;
+                // 如果是订阅链接元素，恢复时使用最新的cpurl，否则使用原始文本
+                if (element.id === 'subscriptionLink' && cpurl) {
+                    element.textContent = cpurl;
+                } else {
+                    element.textContent = originalText;
+                }
             }, 2000);
         }
         
@@ -2431,15 +2640,45 @@ async function subHtml(request, hostLength = hosts.length) {
             document.getElementById(tabName + '-tab').classList.add('active');
             document.getElementById(tabName + '-panel').classList.add('active');
             
+            // 检查ed选项的可用性
+            checkEdOptionAvailability();
+            
+            // 检查HTTP代理选项的可用性
+            checkHttpProxyAvailability(tabName);
+            
             // 保存当前选项卡状态到缓存
             saveFormData();
+        }
+        
+        // 检查HTTP代理选项的可用性
+        function checkHttpProxyAvailability(currentTab) {
+            const httpRadio = document.querySelector('input[name="proxyMode"][value="http"]');
+            const httpRadioOption = httpRadio.closest('.radio-option');
+            const currentProxyMode = document.querySelector('input[name="proxyMode"]:checked').value;
+            
+            if (currentTab === 'snippets') {
+                // Snippets模式：启用HTTP代理选项
+                httpRadio.disabled = false;
+                httpRadioOption.classList.remove('disabled');
+            } else {
+                // 其他模式：禁用HTTP代理选项
+                httpRadio.disabled = true;
+                httpRadioOption.classList.add('disabled');
+                
+                // 如果当前选择的是HTTP代理，自动切换到ProxyIP模式
+                if (currentProxyMode === 'http') {
+                    const proxyipRadio = document.querySelector('input[name="proxyMode"][value="proxyip"]');
+                    proxyipRadio.checked = true;
+                    toggleProxyMode();
+                }
+            }
         }
         
         // 加载Worker代码
         async function loadWorkerCode() {
             try {
-                const currentDomain = window.location.host;
-                const response = await fetch(\`https://\${currentDomain}/proxy_host.js\`);
+                const workerJsUrl = GITHUB_PROXY + 'https://raw.githubusercontent.com/cmliu/CF-Workers-BPSUB/main/proxy_host/_worker.js';
+                const response = await fetch(workerJsUrl);
                 if (!response.ok) {
                     throw new Error('获取代码失败');
                 }
@@ -2537,11 +2776,34 @@ async function subHtml(request, hostLength = hosts.length) {
         }
 
         let snippetCodeCache = '';
+        
+        // GitHub代理配置
+        const GITHUB_PROXY = 'https://github.cmliussss.net/';
+        
+        // 存储当前订阅URL
+        let cpurl = '';
+
+        // 源码URL映射
+        const snippetUrlMap = {
+            'v': 'https://raw.githubusercontent.com/cmliu/CF-Workers-BPSUB/main/snippet/v.js',
+            't12': 'https://raw.githubusercontent.com/cmliu/CF-Workers-BPSUB/main/snippet/t12.js', 
+            't13': 'https://raw.githubusercontent.com/cmliu/CF-Workers-BPSUB/main/snippet/t13.js',
+            'my': 'https://raw.githubusercontent.com/cmliu/CF-Workers-BPSUB/main/snippet/my.js'
+        };
+
+        // 获取当前选中的源码类型
+        function getSelectedSnippetSource() {
+            const selectElement = document.getElementById('snippetSourceSelect');
+            return selectElement ? selectElement.value : 'v';
+        }
 
         // 加载 Snippet 代码
         async function loadSnippetCode() {
+            const sourceType = getSelectedSnippetSource();
+            const snippetJsUrl = snippetUrlMap[sourceType];
+            
             try {
-                const response = await fetch('https://raw.githubusercontent.com/cmliu/CF-Workers-BPSUB/main/snippet/v.js');
+                const response = await fetch(GITHUB_PROXY + snippetJsUrl);
                 if (!response.ok) {
                     throw new Error('获取代码失败');
                 }
@@ -2550,7 +2812,46 @@ async function subHtml(request, hostLength = hosts.length) {
                 updateSnippetCode();
             } catch (error) {
                 console.error('加载Snippet代码失败:', error);
-                document.getElementById('snippetCode').value = '加载代码失败，请自行从\\nhttps://raw.githubusercontent.com/cmliu/CF-Workers-BPSUB/main/snippet/v.js\\n获取最新代码';
+                document.getElementById('snippetCode').value = \`加载代码失败，请自行从\\n\${snippetJsUrl}\\n获取最新代码\`;
+            }
+        }
+
+        // 源码选择变更处理函数
+        function changeSnippetSource() {
+            // 重新加载对应的源码
+            loadSnippetCode();
+            
+            // 检查ed选项的可用性
+            checkEdOptionAvailability();
+            
+            // 保存到缓存
+            saveFormData();
+        }
+
+        // 检查ed选项的可用性
+        function checkEdOptionAvailability() {
+            const enableEdCheckbox = document.getElementById('enableEd');
+            const enableEdOption = enableEdCheckbox ? enableEdCheckbox.closest('.checkbox-option') : null;
+            
+            if (enableEdCheckbox && enableEdOption) {
+                const selectedSource = getSelectedSnippetSource();
+                const activeTab = document.querySelector('.tab-button.active');
+                const isSnippetsTab = activeTab && activeTab.id === 'snippets-tab';
+                
+                if (isSnippetsTab && selectedSource === 't13') {
+                    // 天书13源码不支持ed参数，禁用选项
+                    enableEdCheckbox.disabled = true;
+                    enableEdCheckbox.checked = false;
+                    enableEdOption.style.opacity = '0.5';
+                    enableEdOption.style.pointerEvents = 'none';
+                    enableEdOption.title = '天书13源码不支持ed参数配置';
+                } else {
+                    // 其他情况启用选项
+                    enableEdCheckbox.disabled = false;
+                    enableEdOption.style.opacity = '1';
+                    enableEdOption.style.pointerEvents = 'auto';
+                    enableEdOption.title = '';
+                }
             }
         }
 
@@ -2751,6 +3052,7 @@ async function subHtml(request, hostLength = hosts.length) {
             const proxyMode = document.querySelector('input[name="proxyMode"]:checked').value;
             const proxyipGroup = document.getElementById('proxyip-group');
             const socks5Group = document.getElementById('socks5-group');
+            const httpGroup = document.getElementById('http-group');
             
             // 更新单选框样式
             document.querySelectorAll('input[name="proxyMode"]').forEach(radio => {
@@ -2766,9 +3068,15 @@ async function subHtml(request, hostLength = hosts.length) {
             if (proxyMode === 'socks5') {
                 proxyipGroup.style.display = 'none';
                 socks5Group.style.display = 'block';
+                httpGroup.style.display = 'none';
+            } else if (proxyMode === 'http') {
+                proxyipGroup.style.display = 'none';
+                socks5Group.style.display = 'none';
+                httpGroup.style.display = 'block';
             } else {
                 proxyipGroup.style.display = 'block';
                 socks5Group.style.display = 'none';
+                httpGroup.style.display = 'none';
             }
         }
         
@@ -2948,9 +3256,26 @@ async function subHtml(request, hostLength = hosts.length) {
                 });
             });
             
+            // 初始化源码选择下拉框状态
+            const snippetSourceSelect = document.getElementById('snippetSourceSelect');
+            if (snippetSourceSelect) {
+                // 添加事件监听
+                snippetSourceSelect.addEventListener('change', function() {
+                    changeSnippetSource();
+                });
+            }
+            
             // 执行初始切换以确保显示状态正确
             toggleIPMode();
             toggleProxyMode();
+            
+            // 初始化ed选项可用性检查
+            checkEdOptionAvailability();
+            
+            // 初始化HTTP代理选项可用性检查
+            const activeTab = document.querySelector('.tab-button.active');
+            const currentTab = activeTab ? activeTab.id.replace('-tab', '') : 'workers';
+            checkHttpProxyAvailability(currentTab);
             
             // 初始化复选框事件监听
             const globalSocks5Checkbox = document.getElementById('globalSocks5');
@@ -2988,6 +3313,45 @@ async function subHtml(request, hostLength = hosts.length) {
                         }
                     });
                 }
+            }
+            
+            // 初始化高级参数复选框事件监听
+            const enableEdCheckbox = document.getElementById('enableEd');
+            if (enableEdCheckbox) {
+                const checkboxOption = enableEdCheckbox.closest('.checkbox-option');
+                if (checkboxOption && enableEdCheckbox.checked) {
+                    checkboxOption.classList.add('checked');
+                }
+                
+                enableEdCheckbox.addEventListener('change', function() {
+                    const checkboxOption = this.closest('.checkbox-option');
+                    if (checkboxOption) {
+                        if (this.checked) {
+                            checkboxOption.classList.add('checked');
+                        } else {
+                            checkboxOption.classList.remove('checked');
+                        }
+                    }
+                });
+            }
+            
+            const skipCertVerifyCheckbox = document.getElementById('skipCertVerify');
+            if (skipCertVerifyCheckbox) {
+                const checkboxOption = skipCertVerifyCheckbox.closest('.checkbox-option');
+                if (checkboxOption && skipCertVerifyCheckbox.checked) {
+                    checkboxOption.classList.add('checked');
+                }
+                
+                skipCertVerifyCheckbox.addEventListener('change', function() {
+                    const checkboxOption = this.closest('.checkbox-option');
+                    if (checkboxOption) {
+                        if (this.checked) {
+                            checkboxOption.classList.add('checked');
+                        } else {
+                            checkboxOption.classList.remove('checked');
+                        }
+                    }
+                });
             }
         });
     </script>
