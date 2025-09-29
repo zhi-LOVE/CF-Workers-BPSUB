@@ -1,4 +1,4 @@
-const FIXED_UUID = '';
+const FIXED_UUID = '';// 天书13
 import { connect } from 'cloudflare:sockets';
 //本脚本不支持任何苹果ios客户端
 //说明：抛弃了ed配置，不要设置/?ed=2560等任何ed，重构全部传输逻辑，去除订阅功能，自己手戳节点，支持基础反代路径传参/proxyip=，建议pages部署
@@ -17,9 +17,10 @@ export default {
             const url = new URL(访问请求.url);
             我的SOCKS5账号 = url.searchParams.get('socks5') || url.searchParams.get('http');
             启用SOCKS5全局反代 = url.searchParams.has('globalproxy');
-            if (url.pathname.toLowerCase().includes('/socks5=')) {
-                我的SOCKS5账号 = url.pathname.split('/socks5=')[1];
+            if (url.pathname.toLowerCase().includes('/socks5=') || (url.pathname.includes('/s5=')) || (url.pathname.includes('/gs5='))) {
+                我的SOCKS5账号 = url.pathname.split('5=')[1];
                 启用SOCKS5反代 = 'socks5';
+                启用SOCKS5全局反代 = url.pathname.includes('/gs5=') ? true : 启用SOCKS5全局反代;
             } else if (url.pathname.toLowerCase().includes('/http=')) {
                 我的SOCKS5账号 = url.pathname.split('/http=')[1];
                 启用SOCKS5反代 = 'http';

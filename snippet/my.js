@@ -1,4 +1,4 @@
-const FIXED_UUID = '';// 建议修改为自己的规范化UUID，如不需要可留空
+const FIXED_UUID = '';// ws + xhttp版本
 import { connect } from 'cloudflare:sockets';
 let 反代IP = '';
 let 启用SOCKS5反代 = null;
@@ -9,9 +9,10 @@ export default {
         const url = new URL(request.url);
         我的SOCKS5账号 = url.searchParams.get('socks5') || url.searchParams.get('http');
         启用SOCKS5全局反代 = url.searchParams.has('globalproxy');
-        if (url.pathname.toLowerCase().includes('/socks5=')) {
-            我的SOCKS5账号 = url.pathname.split('/socks5=')[1];
+        if (url.pathname.toLowerCase().includes('/socks5=') || (url.pathname.includes('/s5=')) || (url.pathname.includes('/gs5='))) {
+            我的SOCKS5账号 = url.pathname.split('5=')[1];
             启用SOCKS5反代 = 'socks5';
+            启用SOCKS5全局反代 = url.pathname.includes('/gs5=') ? true : 启用SOCKS5全局反代;
         } else if (url.pathname.toLowerCase().includes('/http=')) {
             我的SOCKS5账号 = url.pathname.split('/http=')[1];
             启用SOCKS5反代 = 'http';
@@ -64,7 +65,7 @@ export default {
                 // XHTTP 处理
                 return handleXhttp(request);
             } else {
-                return new Response(`${解析地址端口(反代IP)}`, { status: 200 });
+                return new Response('Hello World!', { status: 200 });
             }
         }
     }
@@ -329,9 +330,9 @@ function parseUUID(uuid) {
 // SOCKS5连接
 async function socks5Connect(targetHost, targetPort) {
     const parsedSocks5Address = await 获取SOCKS5账号(我的SOCKS5账号);
-    const { username, password, host, port } = parsedSocks5Address;
+    const { username, password, hostname, port } = parsedSocks5Address;
     const sock = connect({
-        hostname: host,
+        hostname: hostname,
         port: port
     });
     await sock.opened;
