@@ -51,14 +51,14 @@ export default {
                 });
             } else if (bphost.includes("*")) bphost = bphost.replace("*", Date.now().toString());
 
-            subConverter = url.searchParams.get('subapi') || subConverter;
+            subConverter = (url.searchParams.has('subapi') && url.searchParams.get('subapi') !== 'default') ? url.searchParams.get('subapi') : subConverter;
             if (subConverter.includes("http://")) {
                 subConverter = subConverter.split("//")[1];
                 subProtocol = 'http';
             } else {
                 subConverter = subConverter.split("//")[1] || subConverter;
             }
-            subConfig = url.searchParams.get('subconfig') || subConfig;
+            subConfig = (url.searchParams.has('subconfig') && url.searchParams.get('subconfig') !== 'default') ? url.searchParams.get('subconfig') : subConfig;
             const trojan = url.searchParams.get('trojan') || false;
             const uuid = url.searchParams.get('uuid') || env.UUID;
             const uuid_json = await getLocalData(bphost, uuid);
@@ -387,19 +387,19 @@ export default {
                     headers: { 'Content-Type': 'application/json' }
                 });
             }
-            
+
             // 安全验证：检查目标URL是否在允许的订阅转换后端列表中
             const allowedUrls = subapiList.map(item => item.value);
             if (!allowedUrls.includes(targetUrl)) {
-                return new Response(JSON.stringify({ 
-                    success: false, 
-                    error: 'Unauthorized URL - Only predefined subscription backends are allowed' 
+                return new Response(JSON.stringify({
+                    success: false,
+                    error: 'Unauthorized URL - Only predefined subscription backends are allowed'
                 }), {
                     status: 403,
                     headers: { 'Content-Type': 'application/json' }
                 });
             }
-            
+
             try {
                 const versionUrl = targetUrl == 'default' ? `${subProtocol}://${subConverter.toLowerCase()}/version` : targetUrl + '/version';
                 const response = await fetch(versionUrl, {
@@ -409,27 +409,27 @@ export default {
                         'User-Agent': 'Mozilla/5.0 (compatible; CF-Workers-BPSUB/1.0)'
                     }
                 });
-                
+
                 if (response.ok) {
                     const versionText = await response.text();
-                    return new Response(JSON.stringify({ 
-                        success: true, 
+                    return new Response(JSON.stringify({
+                        success: true,
                         version: versionText.trim()
                     }), {
                         headers: { 'Content-Type': 'application/json' }
                     });
                 } else {
-                    return new Response(JSON.stringify({ 
-                        success: false, 
-                        error: 'HTTP ' + response.status 
+                    return new Response(JSON.stringify({
+                        success: false,
+                        error: 'HTTP ' + response.status
                     }), {
                         headers: { 'Content-Type': 'application/json' }
                     });
                 }
             } catch (error) {
-                return new Response(JSON.stringify({ 
-                    success: false, 
-                    error: error.message 
+                return new Response(JSON.stringify({
+                    success: false,
+                    error: error.message
                 }), {
                     headers: { 'Content-Type': 'application/json' }
                 });
