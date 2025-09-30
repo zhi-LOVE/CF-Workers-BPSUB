@@ -2394,6 +2394,10 @@ async function subHtml(request, hostLength = 0, FileName, subProtocol, subConver
         // 本地存储配置
         const STORAGE_KEY = 'bpsub_form_data';
         
+        // 服务器端配置变量
+        const DEFAULT_SUBAPI = '${subProtocol}://${subConverter.toLowerCase()}';
+        const DEFAULT_SUBCONFIG = '${subConfig}';
+        
         // 全局变量存储JSON数据
         let subApiData = null;
         let subConfigData = null;
@@ -2479,11 +2483,18 @@ async function subHtml(request, hostLength = 0, FileName, subProtocol, subConver
                     hideSubApiStatus();
                 }
             } else {
-                // 没有缓存，默认选中内置默认后端
-                const defaultValue = 'default';
-                select.value = defaultValue;
-                input.value = defaultValue;
-                input.style.display = 'none';
+                // 没有缓存，如果JSON加载成功，默认选中第一个选项，否则使用内置默认值
+                if (subApiData && subApiData.length > 0) {
+                    const firstOption = subApiData[0];
+                    select.value = firstOption.value;
+                    input.value = firstOption.value;
+                    input.style.display = 'none';
+                } else {
+                    // JSON未加载成功，使用内置默认值
+                    select.value = DEFAULT_SUBAPI;
+                    input.value = DEFAULT_SUBAPI;
+                    input.style.display = 'none';
+                }
             }
             
             // 绑定change事件
@@ -2496,7 +2507,7 @@ async function subHtml(request, hostLength = 0, FileName, subProtocol, subConver
                     input.value = this.value;
                     input.style.display = 'none';
                     // 只有非默认后端才检查版本
-                    if (this.value !== 'default') {
+                    if (this.value !== DEFAULT_SUBAPI) {
                         checkSubApiVersion(this.value);
                     }
                 }
@@ -2637,11 +2648,18 @@ async function subHtml(request, hostLength = 0, FileName, subProtocol, subConver
                     input.style.display = 'block';
                 }
             } else {
-                // 没有缓存，默认选中BPSUB内置默认规则
-                const defaultValue = 'default';
-                select.value = defaultValue;
-                input.value = defaultValue;
-                input.style.display = 'none';
+                // 没有缓存，如果JSON加载成功，默认选中第一个选项，否则使用内置默认值
+                if (subConfigData && subConfigData.length > 0 && subConfigData[0].options && subConfigData[0].options.length > 0) {
+                    const firstOption = subConfigData[0].options[0];
+                    select.value = firstOption.value;
+                    input.value = firstOption.value;
+                    input.style.display = 'none';
+                } else {
+                    // JSON未加载成功，使用内置默认值
+                    select.value = DEFAULT_SUBCONFIG;
+                    input.value = DEFAULT_SUBCONFIG;
+                    input.style.display = 'none';
+                }
             }
             
             // 绑定change事件
@@ -3083,12 +3101,12 @@ async function subHtml(request, hostLength = 0, FileName, subProtocol, subConver
             }
             
             // 处理订阅转换后端（当选择内置默认后端时不添加参数）
-            if (subapi && subapi !== '${subProtocol}://${subConverter.toLowerCase()}') {
+            if (subapi && subapi !== DEFAULT_SUBAPI) {
                 params.append('subapi', subapi);
             }
             
             // 处理订阅转换配置（当选择内置默认规则时不添加参数）
-            if (subconfig && subconfig !== '${subConfig}') {
+            if (subconfig && subconfig !== DEFAULT_SUBCONFIG) {
                 params.append('subconfig', subconfig);
             }
             
@@ -4167,5 +4185,3 @@ function encodeBase64(data) {
     const padding = 3 - (binary.length % 3 || 3);
     return base64.slice(0, base64.length - padding) + '=='.slice(0, padding);
 }
-
-
