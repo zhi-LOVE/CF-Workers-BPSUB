@@ -362,7 +362,7 @@ export default {
             return new Response(JSON.stringify(subapiList, null, 2), {
                 headers: {
                     'Content-Type': 'application/json; charset=utf-8',
-                    'Cache-Control': 'public, max-age=604800', // 7天缓存 (7*24*3600)
+                    'Cache-Control': 'public, max-age=86400', // 1天缓存 (1*24*3600)
                     'Access-Control-Allow-Origin': '*',
                     'Access-Control-Allow-Methods': 'GET',
                     'Access-Control-Allow-Headers': 'Content-Type'
@@ -372,7 +372,7 @@ export default {
             return new Response(JSON.stringify(subConfigList, null, 2), {
                 headers: {
                     'Content-Type': 'application/json; charset=utf-8',
-                    'Cache-Control': 'public, max-age=604800', // 7天缓存 (7*24*3600)
+                    'Cache-Control': 'public, max-age=86400', // 1天缓存 (1*24*3600)
                     'Access-Control-Allow-Origin': '*',
                     'Access-Control-Allow-Methods': 'GET',
                     'Access-Control-Allow-Headers': 'Content-Type'
