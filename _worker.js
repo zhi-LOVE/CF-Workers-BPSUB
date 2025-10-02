@@ -2506,10 +2506,7 @@ async function subHtml(request, hostLength = 0, FileName, subProtocol, subConver
                 } else {
                     input.value = this.value;
                     input.style.display = 'none';
-                    // 只有非默认后端才检查版本
-                    if (this.value !== DEFAULT_SUBAPI) {
-                        checkSubApiVersion(this.value);
-                    }
+                    checkSubApiVersion(this.value);
                 }
                 saveFormData();
             });
