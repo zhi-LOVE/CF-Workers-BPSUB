@@ -69,7 +69,7 @@ export default {
 
         const pair = new WebSocketPair();
         const [client, server] = [pair[0], pair[1]];
-        server.accept(); server.send(new Uint8Array([0, 0]));
+        server.accept();
         handleConnection(server);
         return new Response(null, { status: 101, webSocket: client });
     }
@@ -92,6 +92,7 @@ function handleConnection(ws) {
     let bytesReceived = 0;
     let reconnectCount = 0;
     let stallCount = 0;
+    let versionByte = 0;
     ws.addEventListener('message', async (evt) => {
         try {
             if (isFirstMsg) {
@@ -101,6 +102,8 @@ function handleConnection(ws) {
                 writer = result.writer;
                 reader = result.reader;
                 connectionInfo = result.info;
+                versionByte = result.version;
+                ws.send(new Uint8Array([versionByte, 0]));
                 startReading();
                 startKeepalive();
                 startHealthCheck();
@@ -127,6 +130,7 @@ function handleConnection(ws) {
     });
     async function processHandshake(data) {
         const bytes = new Uint8Array(data);
+        const versionByte = bytes[0];
         const authKey = buildUUID(bytes, 1);
         if (FIXED_UUID && authKey !== FIXED_UUID) {
             throw new Error('Auth failed');
@@ -163,7 +167,8 @@ function handleConnection(ws) {
             socket: sock,
             writer: w,
             reader: r,
-            info: { host: addrInfo.host, port: addrInfo.port }
+            info: { host: addrInfo.host, port: addrInfo.port },
+            version: versionByte
         };
     }
     async function startReading() {
@@ -405,6 +410,7 @@ async function httpConnect(addressRemote, portRemote) {
                             controller.enqueue(remainingData);
                         }
                     }).pipeTo(writable).catch(() => { });
+                    // @ts-ignore
                     sock.readable = readable;
                 }
                 break;

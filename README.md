@@ -215,3 +215,4 @@ A: 设置 `PS` 环境变量，或在优选IP中使用 `#备注` 格式
 - [Mingyu](https://github.com/ymyuuu/workers-vless)：ws+xhttp代码
 - [ca110us](https://github.com/ca110us/epeius)：trojan代码
 - [Alexandre Kojève](https://t.me/Enkelte_notif/784)：stallTCP优化
+- @houyiTFG：天书作者

@@ -2080,7 +2080,7 @@ async function subHtml(request, hostLength = 0, FileName, subProtocol, subConver
                                     <select id="snippetSourceSelect" onchange="changeSnippetSource()">
                                         <option value="v" selected>🎯 白嫖哥源码</option>
                                         <option value="t12">📘 天书12源码</option>
-                                        <option value="t13">📗 天书13源码(不支持ios客户端、ed配置)</option>
+                                        <option value="t13">📗 天书13源码(不支持ed配置)</option>
                                         <option value="my">🔥 ymyuuu源码(支持xhttp协议)</option>
                                         <option value="ca110us">🎠 ca110us源码(trojan协议)</option>
                                         <option value="ak">😂 AK优化源码(stallTCP优化传输机制)</option>
