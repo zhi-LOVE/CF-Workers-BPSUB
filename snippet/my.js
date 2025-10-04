@@ -7,7 +7,7 @@ let 我的SOCKS5账号 = '';
 export default {
     async fetch(request) {
         const url = new URL(request.url);
-        反代IP = [request.cf?.continent && request.cf?.country, request.cf?.continent].filter(Boolean).join('.') + atob('LnByb3h5aXAuY21saXVzc3NzLm5ldA==');
+        反代IP = request.cf.colo + atob('LnByb3h5aXAuY21saXVzc3NzLm5ldA==');
         我的SOCKS5账号 = url.searchParams.get('socks5') || url.searchParams.get('http');
         启用SOCKS5全局反代 = url.searchParams.has('globalproxy');
         if (url.pathname.toLowerCase().includes('/socks5=') || (url.pathname.includes('/s5=')) || (url.pathname.includes('/gs5='))) {

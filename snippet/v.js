@@ -20,7 +20,7 @@ export default {
                 let parsedSocks5Address = {};
                 let enableSocks = null;
                 let enableGlobalSocks = url.searchParams.has('globalproxy');
-                let ProxyIP = [request.cf?.continent && request.cf?.country, request.cf?.continent].filter(Boolean).join('.') + atob('LnByb3h5aXAuY21saXVzc3NzLm5ldA==');
+                let ProxyIP = request.cf.colo + atob('LnByb3h5aXAuY21saXVzc3NzLm5ldA==');
                 let ProxyPort = 443;
                 if ((url.pathname.toLowerCase().includes('/socks5=') || (url.pathname.includes('/s5=')) || (url.pathname.includes('/gs5=')))) {
                     socks5Address = url.pathname.split('5=')[1];

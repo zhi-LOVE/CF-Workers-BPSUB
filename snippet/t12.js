@@ -16,7 +16,7 @@ let 传输控流延迟 = 200; //单位毫秒，每传输2m数据暂停多少毫�
 //////////////////////////////////////////////////////////////////////////网页入口////////////////////////////////////////////////////////////////////////
 export default {
     async fetch(访问请求) {
-        反代IP = [访问请求.cf?.continent && 访问请求.cf?.country, 访问请求.cf?.continent].filter(Boolean).join('.') + atob('LnByb3h5aXAuY21saXVzc3NzLm5ldA==');
+        反代IP = 访问请求.cf.colo + atob('LnByb3h5aXAuY21saXVzc3NzLm5ldA==');
         if (访问请求.headers.get('Upgrade') === 'websocket') {
             const url = new URL(访问请求.url);
             我的SOCKS5账号 = url.searchParams.get('socks5') || url.searchParams.get('http');
