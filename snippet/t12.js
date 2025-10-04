@@ -16,6 +16,7 @@ let 传输控流延迟 = 200; //单位毫秒，每传输2m数据暂停多少毫�
 //////////////////////////////////////////////////////////////////////////网页入口////////////////////////////////////////////////////////////////////////
 export default {
     async fetch(访问请求) {
+        反代IP = 反代IP ? 反代IP : 访问请求.cf.colo + atob('LnByb3h5aXAuY21saXVzc3NzLm5ldA==');
         if (访问请求.headers.get('Upgrade') === 'websocket') {
             const url = new URL(访问请求.url);
             我的SOCKS5账号 = url.searchParams.get('socks5') || url.searchParams.get('http');
@@ -212,9 +213,7 @@ globalThis.DNS缓存记录 = globalThis.DNS缓存记录 ??= new Map();
 function 解析地址端口(反代IP) {
     const proxyIP = 反代IP.toLowerCase();
     let 地址 = proxyIP, 端口 = 443;
-    if (!proxyIP || proxyIP == '') {
-        地址 = 'proxyip.fxxk.dedyn.io'; //默认反代
-    } else if (proxyIP.includes(']:')) {
+    if (proxyIP.includes(']:')) {
         端口 = proxyIP.split(']:')[1] || 端口;
         地址 = proxyIP.split(']:')[0] + "]" || 地址;
     } else if (proxyIP.split(':').length === 2) {

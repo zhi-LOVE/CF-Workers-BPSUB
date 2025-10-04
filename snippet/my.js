@@ -7,6 +7,7 @@ let 我的SOCKS5账号 = '';
 export default {
     async fetch(request) {
         const url = new URL(request.url);
+        反代IP = 反代IP ? 反代IP : request.cf.colo + atob('LnByb3h5aXAuY21saXVzc3NzLm5ldA==');
         我的SOCKS5账号 = url.searchParams.get('socks5') || url.searchParams.get('http');
         启用SOCKS5全局反代 = url.searchParams.has('globalproxy');
         if (url.pathname.toLowerCase().includes('/socks5=') || (url.pathname.includes('/s5=')) || (url.pathname.includes('/gs5='))) {
@@ -382,7 +383,7 @@ async function readVlessHeader(reader) {
 
         // 跳过版本和UUID(17字节)，读取addon长度
         if (offset < 18) continue;
-        
+
         // UUID验证
         if (FIXED_UUID) {
             const uuidBytes = parseUUID(FIXED_UUID);
@@ -390,7 +391,7 @@ async function readVlessHeader(reader) {
                 return null;
             }
         }
-        
+
         const addonLen = buffer[17];
         if (offset < 18 + addonLen + 1) continue;
         const cmd = buffer[18 + addonLen];
@@ -497,9 +498,7 @@ async function 获取SOCKS5账号(address) {
 function 解析地址端口(反代IP) {
     const proxyIP = 反代IP.toLowerCase();
     let 地址 = proxyIP, 端口 = 443;
-    if (!proxyIP || proxyIP == '') {
-        地址 = 'proxyip.fxxk.dedyn.io'; //默认反代
-    } else if (proxyIP.includes(']:')) {
+    if (proxyIP.includes(']:')) {
         端口 = proxyIP.split(']:')[1] || 端口;
         地址 = proxyIP.split(']:')[0] + "]" || 地址;
     } else if (proxyIP.split(':').length === 2) {

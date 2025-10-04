@@ -20,7 +20,7 @@ export default {
                 let parsedSocks5Address = {};
                 let enableSocks = null;
                 let enableGlobalSocks = url.searchParams.has('globalproxy');
-                let ProxyIP = '';
+                let ProxyIP = request.cf.colo + atob('LnByb3h5aXAuY21saXVzc3NzLm5ldA==');
                 let ProxyPort = 443;
                 if ((url.pathname.toLowerCase().includes('/socks5=') || (url.pathname.includes('/s5=')) || (url.pathname.includes('/gs5=')))) {
                     socks5Address = url.pathname.split('5=')[1];
@@ -644,9 +644,7 @@ async function handleUDPOutBound(webSocket, vlessResponseHeader) {
 const WS_READY_STATE_OPEN = 1;
 import { connect } from 'cloudflare:sockets';
 async function getProxyConfiguration(colo, addressRemote, portRemote, ProxyIP, ProxyPort) {
-    if (!ProxyIP || ProxyIP == '') {
-        ProxyIP = 'proxyip.fxxk.dedyn.io';
-    } else if (ProxyIP.includes(']:')) {
+    if (ProxyIP.includes(']:')) {
         ProxyPort = ProxyIP.split(']:')[1] || ProxyPort;
         ProxyIP = ProxyIP.split(']:')[0] + "]" || ProxyIP;
     } else if (ProxyIP.split(':').length === 2) {
