@@ -255,7 +255,7 @@ export default {
 
                 const 标题 = `${url.hostname}:443#${FileName} 订阅到期时间 ${getDateString()}`;
                 let add = [];
-                let addapi = [];
+                let addapi = env.ADDAPI ? await 整理成数组(env.ADDAPI) : [];
                 for (const ip of ips) {
                     if (ip.startsWith('http') && ip.includes('://')) {
                         addapi.push(ip);
