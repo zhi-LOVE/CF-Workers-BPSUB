@@ -3120,13 +3120,13 @@ async function subHtml(request, hostLength = 0, FileName, subProtocol, subConver
             const enableEd = document.getElementById('enableEd').checked;
             const skipCertVerify = document.getElementById('skipCertVerify').checked;
             
-            // 添加 ed=2560 参数（如果启用且不是天书13源码）
+            // 添加 ed=2560 参数（如果启用且不是天书13或ak源码）
             if (enableEd) {
-                // 检查是否为天书13源码
+                // 检查是否为天书13或ak源码
                 const selectedSource = getSelectedSnippetSource();
                 const isSnippetsTab = activeTab && activeTab.id === 'snippets-tab';
                 
-                if (!isSnippetsTab || selectedSource !== 't13') {
+                if (!isSnippetsTab || (selectedSource !== 't13' && selectedSource !== 'ak')) {
                     params.append('ed', '2560');
                 }
             }
@@ -3608,13 +3608,13 @@ async function subHtml(request, hostLength = 0, FileName, subProtocol, subConver
                 const activeTab = document.querySelector('.tab-button.active');
                 const isSnippetsTab = activeTab && activeTab.id === 'snippets-tab';
                 
-                if (isSnippetsTab && selectedSource === 't13') {
+                if (isSnippetsTab && (selectedSource === 't13' || selectedSource === 'ak')) {
                     // 天书13源码不支持ed参数，禁用选项
                     enableEdCheckbox.disabled = true;
                     enableEdCheckbox.checked = false;
                     enableEdOption.style.opacity = '0.5';
                     enableEdOption.style.pointerEvents = 'none';
-                    enableEdOption.title = '天书13源码不支持ed参数配置';
+                    enableEdOption.title = '天书13、ak源码不支持ed参数配置';
                 } else {
                     // 其他情况启用选项
                     enableEdCheckbox.disabled = false;
